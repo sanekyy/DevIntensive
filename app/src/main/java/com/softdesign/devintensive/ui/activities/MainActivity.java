@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
         Log.d(TAG,"onResume");
+
+        if(getSupportActionBar()!=null) getSupportActionBar().setTitle(R.string.dev_name);
     }
 
     @Override

@@ -26,5 +26,8 @@
         <item name="android:layout_marginRight">@dimen/spacing_medium_32</item>
     </style>
 
+    <style name="textFontFamily">
+        <item name="android:fontFamily">"sans-serif-condensed"</item>
+    </style>
 
 </resources>

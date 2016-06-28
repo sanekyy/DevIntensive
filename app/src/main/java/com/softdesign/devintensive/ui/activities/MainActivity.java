@@ -1,25 +1,24 @@
 package com.softdesign.devintensive.ui.activities;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Handler;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.utils.ConstantManager;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = ConstantManager.TAG_PREFIX + "Main Activity";
+
+    private CoordinatorLayout mCoordinatorLayout;
 
     private TextView phone_et;
     private TextView email_et;
@@ -33,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate");
+
+        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_container);
 
         phone_et = (TextView) findViewById(R.id.phone_et);
         email_et = (TextView) findViewById(R.id.email_et);
@@ -54,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (savedInstanceState == null) {
             // start first
-
         } else {
             // start second and more
         }
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.call_iv: intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone_et.getText().toString()));
+            case R.id.call_iv: //intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone_et.getText().toString()));
                 break;
             case R.id.sendMessage_iv: String mailto = "mailto:" + email_et.getText().toString() + "?cc=" + "alice@example.com" +
                                                         "&subject=" + "SUBJ" + "&body=" + "BODY";
@@ -119,6 +119,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             default: Log.d(TAG, "DEF"); return;
         }
-            startActivity(intent);
+            //startActivity(intent);
     }
+
+    private void showSnackbar(String message){
+        Snackbar.make(mCoordinatorLayout, message,Snackbar.LENGTH_SHORT).show();
+    }
+
 }

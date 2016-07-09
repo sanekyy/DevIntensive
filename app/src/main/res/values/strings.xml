@@ -3,4 +3,11 @@
 
 
     <string name="dev_name">Александр Юрковский</string>
+    <string name="user_profile.placeholder.image">Изменить фотографию профиля</string>
+    <string name="user_profile_dialog_gallery">Загрузить из галереи</string>
+    <string name="user_profile_dialog_camera">Сделать снимок</string>
+    <string name="user_profile_dialog_cancel">Отмена</string>
+    <string name="user_profile_dialog_title">Изменить фотографию профиля</string>
+    <string name="user_profile_chose_message">выберите фото</string>
+    <string name="auth_activity_enter_text">ВОЙТИ</string>
 </resources>

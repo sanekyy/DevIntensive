@@ -3,6 +3,12 @@
     package="com.softdesign.devintensive">
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera2" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera2.autofocus" android:required="false"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:name=".utils.DevIntensiveApplication"
         android:allowBackup="true"

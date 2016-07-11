@@ -3,6 +3,10 @@ package com.softdesign.devintensive.data.managers;
 /**
  * Created by ihb on 29.06.16.
  */
+
+/**
+ *  Singleton
+ */
 public class DataManager {
     private static DataManager INSTANCE = null;
 

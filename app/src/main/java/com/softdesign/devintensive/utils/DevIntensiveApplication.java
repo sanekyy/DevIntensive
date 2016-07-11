@@ -7,6 +7,11 @@ import android.preference.PreferenceManager;
 /**
  * Created by ihb on 29.06.16.
  */
+
+/**
+ * Инициализация при запуске приложения, описано в manifest
+ */
+
 public class DevIntensiveApplication extends Application {
 
     public static SharedPreferences sSharedPreferences;

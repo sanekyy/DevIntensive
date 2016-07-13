@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">DevIntensive</string>
 
+    <!--Font Family-->
+    <string name="ff_regular">sans-serif</string>
+    <string name="ff_medium">sans-serif-medium</string>
+
 
     <string name="dev_name">Александр Юрковский</string>
     <string name="user_profile.placeholder.image">Изменить фотографию профиля</string>
@@ -9,5 +13,14 @@
     <string name="user_profile_dialog_cancel">Отмена</string>
     <string name="user_profile_dialog_title">Изменить фотографию профиля</string>
     <string name="user_profile_chose_message">выберите фото</string>
-    <string name="auth_activity_enter_text">ВОЙТИ</string>
+
+
+    <!--AuthActivity-->
+    <string name="auth.authorization_enter">Войти</string>
+    <string name="auth.email">Введите e-mail</string>
+    <string name="auth.password">Введите пароль</string>
+    <string name="auth.login">Войти</string>
+    <string name="auth.remember">Забыли пароль?</string>
+
+
 </resources>

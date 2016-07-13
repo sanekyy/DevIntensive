@@ -35,6 +35,7 @@
                 >
 
                 <TextView
+                    android:id="@+id/rating_tv"
                     style="@style/textFontFamily"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -67,6 +68,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/code_lines_tv"
                     style="@style/textFontFamily"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -100,6 +102,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/projects_tv"
                     style="@style/textFontFamily"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

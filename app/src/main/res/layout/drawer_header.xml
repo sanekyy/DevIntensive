@@ -11,6 +11,7 @@
 
     <!-- User photo -->
     <ImageView
+        android:id="@+id/avatar_iv"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="@dimen/spacing_normal_16"

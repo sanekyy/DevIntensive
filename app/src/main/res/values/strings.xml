@@ -15,6 +15,20 @@
     <string name="user_profile_chose_message">выберите фото</string>
 
 
+    <string name="profile.mobile.hint">Мобильный</string>
+    <string name="profile.mobile.dummy">+7 (912) 181-28-39</string>
+    <string name="profile.email.hint">Email</string>
+    <string name="profile.email.dummy">sanekyy@gmail.com</string>
+    <string name="profile.vk.hint">Профиль в VK</string>
+    <string name="profile.vk.dummy">vk.com/sanekyy</string>
+    <string name="profile.github.hint">Репозиторий</string>
+    <string name="profile.github.dummy">github.com/sanekyy/DevIntensive</string>
+    <string name="profile.bio.hint">О себе</string>
+    <string name="profile.bio.dummy">Описание жизни человека, сделанное другими людьми или им самим (автобиография). Биография является источником первичной социологической информации, позволяющей определить психологический тип личности в его исторической, национальной и социальной обусловленности. Биография воссоздаёт историю человека в связи с общественной действительностью, культурой и бытом его эпохи. Биография может быть научной, художественной, популярной и т. д.
+
+</string>
+
+
     <!--AuthActivity-->
     <string name="auth.authorization_enter">Войти</string>
     <string name="auth.email">Введите e-mail</string>

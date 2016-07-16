@@ -8,6 +8,8 @@ public interface ConstantManager {
 
     String EDIT_MODE_KEY = "EDIT_MODE_KEY";
 
+    String USER_FIRST_NAME_KEY="USER_FIRST_NAME_KEY";
+    String USER_SECOND_NAME_KEY="USER_SECOND_NAME_KEY";
     String USER_PHONE_KEY = "USER_KEY_1";
     String USER_MAIL_KEY = "USER_KEY_2";
     String USER_VK_KEY = "USER_KEY_3";
@@ -28,4 +30,6 @@ public interface ConstantManager {
     int PERMISSION_REQUEST_SETTINGS_CODE=101;
     int CAMERA_REQUEST_PERMISSION_CODE=102;
     int GALLERY_REQUEST_PERMISSION_CODE=103;
+
+    String PARCELABLE_KEY = "PARCELABLE_KEY";
 }

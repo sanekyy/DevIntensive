@@ -133,5 +133,10 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
         userFields.add(userModel.getData().getUser().getPublicInfo().getBio());
 
         mDataManager.getPreferencesManager().saveUserProfileData(userFields);
+
+
+        mDataManager.getPreferencesManager().saveUserFullName(userModel.getData().getUser().getFirstName(),userModel.getData().getUser().getSecondName());
+
+
     }
 }

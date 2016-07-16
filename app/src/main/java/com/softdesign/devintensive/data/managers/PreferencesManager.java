@@ -128,4 +128,27 @@ public class PreferencesManager {
     public String getUserId(){
         return mSharedPreferences.getString(ConstantManager.USER_ID_KEY, "null");
     }
+
+    public void saveUserFullName(String firstName, String secondName) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(ConstantManager.USER_FIRST_NAME_KEY, firstName);
+        editor.putString(ConstantManager.USER_SECOND_NAME_KEY, secondName);
+        editor.apply();
+    }
+
+    public String getUserFirstName(){
+        return mSharedPreferences.getString(ConstantManager.USER_FIRST_NAME_KEY, "null");
+    }
+
+    public String getUserSecondName(){
+        return mSharedPreferences.getString(ConstantManager.USER_SECOND_NAME_KEY, "null");
+    }
+
+    public String getUserFullName(){
+        return getUserFirstName() + " " + getUserSecondName();
+    }
+
+    public String getUserEmail(){
+        return mSharedPreferences.getString(ConstantManager.USER_MAIL_KEY, "null");
+    }
 }

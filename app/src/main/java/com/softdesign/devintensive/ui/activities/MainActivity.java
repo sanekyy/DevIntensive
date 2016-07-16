@@ -64,9 +64,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private AppBarLayout mAppBarLayout;
     private ImageView mProfileImage;
 
-    private EditText mUserPhone_et, mUserEmail_et, mUserVk_et, mUserGithub_et, mUserAbout_et;
+    // User Fields
+    private EditText mUserPhone_et, mUserEmail_et, mUserVk_et, mUserGithub_et, mUserBio_et;
     private List<EditText> mUserInfoViews;
 
+    // Grey Box
     private TextView mUserValueRating, mUserValueCodeLines, mUserValueProjects;
     private List<TextView> mUserValueViews;
 
@@ -80,6 +82,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate");
+
+        Log.d(ConstantManager.TAG_PREFIX, DataManager.getInstance().getPreferencesManager().getAuthToken());
+        Log.d(ConstantManager.TAG_PREFIX, DataManager.getInstance().getPreferencesManager().getUserId());
 
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_container);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -97,14 +102,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mUserEmail_et = (EditText) findViewById(R.id.email_et);
         mUserVk_et = (EditText) findViewById(R.id.vk_et);
         mUserGithub_et = (EditText) findViewById(R.id.github_et);
-        mUserAbout_et = (EditText) findViewById(R.id.about_et);
+        mUserBio_et = (EditText) findViewById(R.id.bio_et);
 
         mUserInfoViews = new ArrayList<>();
         mUserInfoViews.add(mUserPhone_et);
         mUserInfoViews.add(mUserEmail_et);
         mUserInfoViews.add(mUserVk_et);
         mUserInfoViews.add(mUserGithub_et);
-        mUserInfoViews.add(mUserAbout_et);
+        mUserInfoViews.add(mUserBio_et);
 
         mUserValueRating = (TextView) findViewById(R.id.rating_tv);
         mUserValueCodeLines = (TextView) findViewById(R.id.code_lines_tv);
@@ -129,6 +134,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setupDrawer();
         initUserFields();
         initUserInfoValue();
+        initDrawerHeaderInfo();
+
         Picasso.with(this)
                 .load(mDataManager.getPreferencesManager().loadUserPhoto())
                 .placeholder(R.drawable.user_photo) // TODO: 02.07.16  следать плейсхолдер и трансформ + crop
@@ -137,7 +144,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 .load(mDataManager.getPreferencesManager().loadUserAvatar())
                 .placeholder(R.drawable.user_photo)
                 .into((ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.avatar_iv));
-
 
         if (savedInstanceState == null) {
             // start first
@@ -167,7 +173,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onResume();
         Log.d(TAG, "onResume");
 
-        if (getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.dev_name);
+        if (getSupportActionBar() != null) getSupportActionBar().setTitle(DataManager.getInstance().getPreferencesManager().getUserFullName());
     }
 
     @Override
@@ -282,6 +288,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 return false;
             }
         });
+    }
+
+    private void initDrawerHeaderInfo() {
+        ((TextView) mNavigationView.getHeaderView(0).findViewById(R.id.user_name_txt)).setText(DataManager.getInstance().getPreferencesManager().getUserFullName());
+        ((TextView) mNavigationView.getHeaderView(0).findViewById(R.id.user_email_txt)).setText(DataManager.getInstance().getPreferencesManager().getUserEmail());
     }
 
     /**

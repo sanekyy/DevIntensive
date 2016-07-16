@@ -23,7 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/color_primary"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:fitsSystemWindows="true">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
@@ -36,14 +37,15 @@
                 <!-- Toolbar Image -->
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/profile_image_size"
-                    android:fitsSystemWindows="true">
+                    android:layout_height="@dimen/profile_image_size">
+
                     <ImageView
                         android:id="@+id/user_photo_img"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/profile_image_size"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/user_photo"/>
+                        android:src="@drawable/user_photo"
+                        android:fitsSystemWindows="true"/>
 
                     <!-- Change photo -->
                     <RelativeLayout
@@ -81,9 +83,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:theme="@style/AppTheme.PopupOverlay"
                     android:titleTextColor="@color/white"
-                    app:layout_collapseMode="pin"
-                    >
-                </android.support.v7.widget.Toolbar>
+                    app:layout_collapseMode="pin"/>
 
             </android.support.design.widget.CollapsingToolbarLayout>
 

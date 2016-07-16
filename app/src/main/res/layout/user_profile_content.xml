@@ -157,9 +157,9 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:focusable="false"
-                        android:hint="Мобильный"
+                        android:hint="@string/profile.mobile.hint"
                         android:inputType="phone"
-                        android:text="+7 (912) 181-28-39"
+                        android:text="@string/profile.mobile.dummy"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey"
                         />
@@ -213,9 +213,9 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:focusable="false"
-                        android:hint="Email"
+                        android:hint="@string/profile.email.hint"
                         android:inputType="textEmailAddress"
-                        android:text="sanekyy@gmail.com"
+                        android:text="@string/profile.email.dummy"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey"
                         />
@@ -272,9 +272,9 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:focusable="false"
-                        android:hint="Профиль в VK"
+                        android:hint="@string/profile.vk.hint"
                         android:inputType="textUri"
-                        android:text="vk.com/sanekyy"
+                        android:text="@string/profile.vk.dummy"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey"
                         />
@@ -328,9 +328,9 @@
                         android:layout_height="wrap_content"
                         android:enabled="false"
                         android:focusable="false"
-                        android:hint="Репозиторий"
+                        android:hint="@string/profile.github.hint"
                         android:inputType="text"
-                        android:text="github.com/sanekyy/DevIntensive"
+                        android:text="@string/profile.github.dummy"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey"
                         />
@@ -378,16 +378,16 @@
                     >
 
                     <EditText
-                        android:id="@+id/about_et"
+                        android:id="@+id/bio_et"
                         style="@style/textFontFamily"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="@dimen/spacing_medium_32"
                         android:enabled="false"
                         android:focusable="false"
-                        android:hint="О себе"
+                        android:hint="@string/profile.bio.hint"
                         android:inputType="textMultiLine"
-                        android:text="Бла бла бла бла бла бла бла бла бла бла бла бла бла бла бла бла ухуху ухуху ухуху ухуху ухуху ухуху ухуху ухуху ухуху ухуху ухуху ухуху  бла бла бла бла бла бла"
+                        android:text="@string/profile.bio.dummy"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey"
                         />

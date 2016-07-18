@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.softdesign.devintensive.ui.views.AspectRatioImageView
+                android:id="@+id/user_photo_img"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/user_photo"
+                android:scaleType="centerCrop"
+                app:aspect_ratio="1.78"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/user_full_name_tv"
+                android:text="FULL NAME"
+                android:textColor="@color/white"
+                android:fontFamily="@string/ff_medium"
+                android:textSize="@dimen/font_medium_24"
+                android:paddingLeft="@dimen/spacing_normal_16"
+                android:paddingRight="@dimen/spacing_normal_16"
+                android:paddingBottom="@dimen/spacing_medial_24"
+                android:layout_gravity="bottom"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_large_72"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_weight="0.25">
+                <TextView
+                    android:id="@+id/rating_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:fontFamily="@string/ff_medium"
+                    android:textSize="@dimen/font_medium_20"
+                    android:textColor="@color/black"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Рейтинг"
+                    android:fontFamily="@string/ff_regular"
+                    android:textSize="@dimen/font_normal_14"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_weight="0.5">
+                <TextView
+                    android:id="@+id/code_lines_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:fontFamily="@string/ff_medium"
+                    android:textSize="@dimen/font_medium_20"
+                    android:textColor="@color/black"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Написано строк кода"
+                    android:fontFamily="@string/ff_regular"
+                    android:textSize="@dimen/font_normal_14"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_weight="0.25">
+                <TextView
+                    android:id="@+id/projects_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:fontFamily="@string/ff_medium"
+                    android:textSize="@dimen/font_medium_20"
+                    android:textColor="@color/black"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Проектов"
+                    android:fontFamily="@string/ff_regular"
+                    android:textSize="@dimen/font_normal_14"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/bio_tv"
+            android:textColor="@color/grey_light"
+            android:text="@string/profile.bio.dummy"
+            android:maxLines="3"
+            android:paddingLeft="@dimen/spacing_normal_16"
+            android:paddingRight="@dimen/spacing_normal_16"
+            android:fontFamily="@string/ff_regular"
+            android:textSize="@dimen/font_normal_14"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_light"
+            android:layout_marginTop="@dimen/spacing_normal_16"
+            android:layout_marginBottom="@dimen/spacing_small_8"/>
+
+        <Button
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:id="@+id/more_info_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Просмотр"
+            android:textColor="@color/color_accent"
+            android:paddingLeft="@dimen/spacing_normal_16"
+            android:paddingRight="@dimen/spacing_normal_16"/>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

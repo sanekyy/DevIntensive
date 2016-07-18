@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/size_large_72">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/spacing_larger_72"
+            android:hint="@string/profile.github.hint"
+            android:layout_marginTop="@dimen/spacing_small_8"
+            style="@style/textFontFamily"
+            android:textColorHint="@color/grey"/>
+
+        <TextView
+            android:id="@+id/github_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/spacing_larger_72"
+            android:text="@string/profile.github.dummy"
+            android:layout_marginTop="@dimen/spacing_small_8"
+            style="@style/textFontFamily"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+    
+    <ImageView
+        style="@style/icon.right"
+        android:src="@drawable/ic_visibility_grey_24dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
+
+
+</RelativeLayout>

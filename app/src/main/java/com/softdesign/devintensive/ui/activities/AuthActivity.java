@@ -1,15 +1,11 @@
 package com.softdesign.devintensive.ui.activities;
 
-import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,21 +14,15 @@ import android.widget.TextView;
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.data.network.req.UserLoginReq;
-import com.softdesign.devintensive.data.network.res.UserListRes;
 import com.softdesign.devintensive.data.network.res.UserModelRes;
-import com.softdesign.devintensive.data.storage.models.Repository;
-import com.softdesign.devintensive.data.storage.models.RepositoryDao;
-import com.softdesign.devintensive.data.storage.models.User;
-import com.softdesign.devintensive.data.storage.models.UserDTO;
-import com.softdesign.devintensive.data.storage.models.UserDao;
-import com.softdesign.devintensive.ui.adapters.UsersAdapter;
-import com.softdesign.devintensive.utils.AppConfig;
 import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.NetworkStatusChecker;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,10 +32,16 @@ import retrofit2.Response;
  */
 public class AuthActivity extends BaseActivity implements View.OnClickListener {
 
-    private Button mSignIn;
-    private TextView mRememberPassword;
-    private EditText mLogin, mPassword;
-    private CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.sign_in_btn)
+    Button mSignIn;
+    @BindView(R.id.remember_password_tv)
+    TextView mRememberPassword;
+    @BindView(R.id.login_email_et)
+    EditText mLogin;
+    @BindView(R.id.login_password_et)
+    EditText mPassword;
+    @BindView(R.id.main_coordinator_container)
+    CoordinatorLayout mCoordinatorLayout;
 
     private DataManager mDataManager;
 
@@ -57,22 +53,16 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
 
         mDataManager = DataManager.getInstance();
 
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_container);
-        mSignIn = (Button) findViewById(R.id.login_btn);
-        mRememberPassword = (TextView) findViewById(R.id.remember_password_tv);
-        mLogin = (EditText) findViewById(R.id.login_email_et);
-        mPassword = (EditText) findViewById(R.id.login_password_et);
+        ButterKnife.bind(this);
 
         mRememberPassword.setOnClickListener(this);
         mSignIn.setOnClickListener(this);
-
-
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.login_btn:
+            case R.id.sign_in_btn:
                 signIn();
                 break;
             case R.id.remember_password_tv:
@@ -121,10 +111,10 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
                         hideProgress();
                     } else if (response.code() == 404) {
                         hideProgress();
-                        showSnackbar("Неверный логин или пароль");
+                        showSnackbar(getString(R.string.error_login_or_password));
                     } else {
                         hideProgress();
-                        showSnackbar("Всё пропало Шеф!!!");
+                        showSnackbar(getString(R.string.error_all_bad));
                     }
                 }
 
@@ -135,7 +125,7 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
                 }
             });
         } else{
-            showSnackbar("Сеть недоступна, проверьте соединение");
+            showSnackbar(getString(R.string.error_network_not_available));
         }
     }
 

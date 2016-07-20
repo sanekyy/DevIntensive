@@ -1,5 +1,6 @@
 package com.softdesign.devintensive.ui.activities;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -18,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +33,7 @@ import com.softdesign.devintensive.data.storage.models.User;
 import com.softdesign.devintensive.data.storage.models.UserDTO;
 import com.softdesign.devintensive.data.storage.models.UserDao;
 import com.softdesign.devintensive.ui.adapters.UsersAdapter;
+import com.softdesign.devintensive.ui.fragments.UserListRetainFragment;
 import com.softdesign.devintensive.utils.AppConfig;
 import com.softdesign.devintensive.utils.CircleTransform;
 import com.softdesign.devintensive.utils.ConstantManager;
@@ -38,22 +41,31 @@ import com.softdesign.devintensive.utils.ConstantManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class UserListActivity extends BaseActivity {
 
-    private CoordinatorLayout mCoordinatorLayout;
-    private Toolbar mToolbar;
-    private DrawerLayout mNavigationDrawer;
-    private NavigationView mNavigationView;
-    private RecyclerView mRecyclerView;
-    private MenuItem mSearchItem;
+    @BindView(R.id.main_coordinator_container)
+    CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.navigation_drawer)
+    DrawerLayout mNavigationDrawer;
+    @BindView(R.id.navigation_view)
+    NavigationView mNavigationView;
+    @BindView(R.id.user_list)
+    RecyclerView mRecyclerView;
+
+    MenuItem mSearchItem;
 
     private DataManager mDataManager;
     private UsersAdapter mUsersAdapter;
     private List<User> mUsers;
+    private UserListRetainFragment mRetainFragment;
     private String mQuery;
 
     private RepositoryDao mRepositoryDao;
@@ -70,14 +82,10 @@ public class UserListActivity extends BaseActivity {
 
         mDataManager = DataManager.getInstance();
 
+        ButterKnife.bind(this);
+
         mUserDao = mDataManager.getDaoSession().getUserDao();
         mRepositoryDao = mDataManager.getDaoSession().getRepositoryDao();
-
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_container);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mNavigationDrawer = (DrawerLayout) findViewById(R.id.navigation_drawer);
-        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
-        mRecyclerView = (RecyclerView) findViewById(R.id.user_list);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -89,8 +97,16 @@ public class UserListActivity extends BaseActivity {
         initDrawerHeaderInfo();
         loadAvatarInDrawable();
 
-        saveUsersInDb();
+        initUserList();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mRetainFragment != null) {
+            mRetainFragment.setUserList(mUsersAdapter.getUsers());
+        }
     }
 
     @Override
@@ -104,9 +120,12 @@ public class UserListActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        setResult(ConstantManager.EXIT_APP_CODE);
-        finish();
-        super.onBackPressed();
+        if (mNavigationView.isShown()) {
+            mNavigationDrawer.closeDrawer(GravityCompat.START);
+        } else {
+            setResult(ConstantManager.EXIT_APP_CODE);
+            finish();
+        }
     }
 
     private List<Repository> getRepoListFromUserRes(UserListRes.UserData userData){
@@ -133,11 +152,10 @@ public class UserListActivity extends BaseActivity {
 
     }
 
-    private void saveUsersInDb(){
-        Call<UserListRes> call = mDataManager.getUserListFromNetwork();
-
+    private void downloadUsersInDb(){
         showProgress();
 
+        Call<UserListRes> call = mDataManager.getUserListFromNetwork();
         call.enqueue(new Callback<UserListRes>() {
             @Override
             public void onResponse(Call<UserListRes> call, Response<UserListRes> response) {
@@ -302,6 +320,7 @@ public class UserListActivity extends BaseActivity {
             }
         });
         mRecyclerView.swapAdapter(mUsersAdapter, false);
+        mRetainFragment.setUserList(mUsersAdapter.getUsers());
     }
 
     private void showUsersByQuery(String query){
@@ -325,4 +344,30 @@ public class UserListActivity extends BaseActivity {
 
 
     }
+
+
+    private void initUserList() {
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        mRetainFragment = (UserListRetainFragment) fm.findFragmentByTag("users_data");
+        if (mRetainFragment == null) {
+            mRetainFragment = new UserListRetainFragment();
+            fm.beginTransaction().add(mRetainFragment, "users_data").commit();
+            downloadUsersInDb();
+        } else {
+            mUsers = mRetainFragment.getUserList();
+            mUsersAdapter = new UsersAdapter(mUsers, new UsersAdapter.UserViewHolder.CustomClickListener() {
+                @Override
+                public void onUserItemClickListener(int position) {
+                    UserDTO userDTO = new UserDTO(mUsers.get(position));
+
+                    Intent profileIntent = new Intent(UserListActivity.this, ProfileUserActivity.class);
+                    profileIntent.putExtra(ConstantManager.PARCELABLE_KEY, userDTO);
+
+                    startActivity(profileIntent);
+                }
+            });
+            mRecyclerView.setAdapter(mUsersAdapter);
+        }
+    }
+
 }

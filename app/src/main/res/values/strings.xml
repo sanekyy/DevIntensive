@@ -35,6 +35,10 @@
     <string name="auth.password">Введите пароль</string>
     <string name="auth.login">Войти</string>
     <string name="auth.remember">Забыли пароль?</string>
+    <string name="photo_uploaded_successfully">Фотография успешно загружена на сервер</string>
+    <string name="error_network_not_available">Сеть недоступна, проверьте соединение</string>
+    <string name="error_all_bad">Всё пропало Шеф!!!</string>
+    <string name="error_login_or_password">Неверный логин или пароль</string>
 
 
 </resources>

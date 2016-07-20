@@ -136,6 +136,14 @@ public class PreferencesManager {
         editor.apply();
     }
 
+    public void saveUserFullName(String fullName) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        String names[] = fullName.split(" ");
+        editor.putString(ConstantManager.USER_FIRST_NAME_KEY, names[0]);
+        editor.putString(ConstantManager.USER_SECOND_NAME_KEY, names[1]);
+        editor.apply();
+    }
+
     public String getUserFirstName(){
         return mSharedPreferences.getString(ConstantManager.USER_FIRST_NAME_KEY, "null");
     }
@@ -150,5 +158,11 @@ public class PreferencesManager {
 
     public String getUserEmail(){
         return mSharedPreferences.getString(ConstantManager.USER_MAIL_KEY, "null");
+    }
+
+    public void clear() {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.clear();
+        editor.apply();
     }
 }

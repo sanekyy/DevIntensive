@@ -108,7 +108,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         return mUsers.size();
     }
 
-
+    public List<User> getUsers() {
+        return mUsers;
+    }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 

@@ -10,6 +10,8 @@ import com.softdesign.devintensive.data.network.PicassoCache;
 import com.softdesign.devintensive.data.network.RestService;
 import com.softdesign.devintensive.data.network.ServiceGenerator;
 import com.softdesign.devintensive.data.network.req.UserLoginReq;
+import com.softdesign.devintensive.data.network.res.UploadPhotoRes;
+import com.softdesign.devintensive.data.network.res.UserInfoRes;
 import com.softdesign.devintensive.data.network.res.UserListRes;
 import com.softdesign.devintensive.data.network.res.UserModelRes;
 import com.softdesign.devintensive.data.storage.models.DaoSession;
@@ -21,10 +23,11 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 
 /**
- *  Singleton
+ * Singleton
  */
 public class DataManager {
     private static DataManager INSTANCE = null;
@@ -36,7 +39,7 @@ public class DataManager {
 
     private DaoSession mDaoSession;
 
-    public DataManager(){
+    public DataManager() {
         this.mPreferencesManager = new PreferencesManager();
         this.mContext = DevIntensiveApplication.getContext();
         this.mRestService = ServiceGenerator.createService(RestService.class);
@@ -44,8 +47,8 @@ public class DataManager {
         this.mDaoSession = DevIntensiveApplication.getDaoSession();
     }
 
-    public static DataManager getInstance(){
-        if(INSTANCE==null) INSTANCE = new DataManager();
+    public static DataManager getInstance() {
+        if (INSTANCE == null) INSTANCE = new DataManager();
         return INSTANCE;
     }
 
@@ -53,7 +56,7 @@ public class DataManager {
         return mPreferencesManager;
     }
 
-    public Context getContext(){
+    public Context getContext() {
         return mContext;
     }
 
@@ -63,12 +66,24 @@ public class DataManager {
 
     //region ========= Network ==========
 
-    public Call<UserModelRes> loginUser(UserLoginReq userLoginReq){
+    public Call<UserModelRes> loginUser(UserLoginReq userLoginReq) {
         return mRestService.loginUser(userLoginReq);
     }
 
-    public Call<UserListRes> getUserListFromNetwork(){
+    public Call<UserInfoRes> loginToken(String userId) {
+        return mRestService.loginToken(userId);
+    }
+
+    public Call<UserListRes> getUserListFromNetwork() {
         return mRestService.getUserList();
+    }
+
+    public Call<UploadPhotoRes> uploadPhoto(String userId, MultipartBody.Part file) {
+        return mRestService.uploadPhoto(userId, file);
+    }
+
+    public Call<UploadPhotoRes> uploadAvatar(String userId, MultipartBody.Part file) {
+        return mRestService.uploadAvatar(userId, file);
     }
 
 
@@ -81,7 +96,7 @@ public class DataManager {
         return mDaoSession;
     }
 
-    public List<User> getUserListFromDb(){
+    public List<User> getUserListFromDb() {
         List<User> userList = new ArrayList<>();
 
         try {
@@ -90,14 +105,14 @@ public class DataManager {
                     .orderDesc(UserDao.Properties.CodeLines)
                     .build()
                     .list();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return userList;
     }
 
 
-    public List<User> getUserListByName(String query){
+    public List<User> getUserListByName(String query) {
 
         List<User> userList = new ArrayList<>();
         try {
@@ -106,12 +121,12 @@ public class DataManager {
                     .orderDesc(UserDao.Properties.CodeLines)
                     .build()
                     .list();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return userList;
     }
     //endregion
-    
+
 }

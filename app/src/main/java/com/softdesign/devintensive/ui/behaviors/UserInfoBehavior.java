@@ -7,9 +7,12 @@ import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.utils.UiHelper;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by ihb on 20.07.16.

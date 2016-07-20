@@ -29,18 +29,42 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ProfileUserActivity extends AppCompatActivity {
 
     private static final String TAG = ConstantManager.TAG_PREFIX + " ProfileUserActivit";
 
-    private Toolbar mToolbar;
-    private ImageView mProfileImage;
-    private EditText mUserBio;
-    private TextView mUserRating, mUserCodeLines, mUserProjects;
-    private CollapsingToolbarLayout mCollapsingToolbarLayout;
-    private CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.user_photo_img)
+    ImageView mProfileImage;
+    @BindView(R.id.bio_et)
+    EditText mUserBio;
+    @BindView(R.id.rating_tv)
+    TextView mUserRating;
+    @BindView(R.id.code_lines_tv)
+    TextView mUserCodeLines;
+    @BindView(R.id.projects_tv)
+    TextView mUserProjects;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
 
+    @BindView(R.id.repositories_list)
     ListView mRepoListView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile_user);
+
+        ButterKnife.bind(this);
+
+        setupToolbar();
+        initProfileData();
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -48,27 +72,6 @@ public class ProfileUserActivity extends AppCompatActivity {
             finish();
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_user);
-
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mProfileImage = (ImageView) findViewById(R.id.user_photo_img);
-        mUserBio = (EditText) findViewById(R.id.bio_et);
-        mUserRating = (TextView) findViewById(R.id.rating_tv);
-        mUserCodeLines = (TextView) findViewById(R.id.code_lines_tv);
-        mUserProjects = (TextView) findViewById(R.id.projects_tv);
-        mCollapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_container);
-
-        mRepoListView = (ListView) findViewById(R.id.repositories_list);
-
-        setupToolbar();
-        initProfileData();
-
     }
 
     private void setupToolbar(){

@@ -1,11 +1,15 @@
 package com.softdesign.devintensive.ui.activities;
 
+import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,7 +18,16 @@ import android.widget.TextView;
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.data.network.req.UserLoginReq;
+import com.softdesign.devintensive.data.network.res.UserListRes;
 import com.softdesign.devintensive.data.network.res.UserModelRes;
+import com.softdesign.devintensive.data.storage.models.Repository;
+import com.softdesign.devintensive.data.storage.models.RepositoryDao;
+import com.softdesign.devintensive.data.storage.models.User;
+import com.softdesign.devintensive.data.storage.models.UserDTO;
+import com.softdesign.devintensive.data.storage.models.UserDao;
+import com.softdesign.devintensive.ui.adapters.UsersAdapter;
+import com.softdesign.devintensive.utils.AppConfig;
+import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.NetworkStatusChecker;
 
 import java.util.ArrayList;
@@ -52,6 +65,8 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
 
         mRememberPassword.setOnClickListener(this);
         mSignIn.setOnClickListener(this);
+
+
     }
 
     @Override
@@ -66,6 +81,12 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(ConstantManager.EXIT_APP_CODE);
+        finish();
+        super.onBackPressed();
+    }
     private void showSnackbar(String message){
         Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
     }
@@ -77,7 +98,6 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
 
     private void loginSuccess(UserModelRes userModel){
 
-        showSnackbar(userModel.getData().getToken());
         mDataManager.getPreferencesManager().saveAuthToken(userModel.getData().getToken());
         mDataManager.getPreferencesManager().saveUserId(userModel.getData().getUser().getId());
         mDataManager.getPreferencesManager().saveUserPhoto(Uri.parse(userModel.getData().getUser().getPublicInfo().getPhoto()));
@@ -85,27 +105,32 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
         saveUserValues(userModel);
         saveUserFields(userModel);
 
-        Intent loginIntent = new Intent(this, MainActivity.class);
-        startActivity(loginIntent);
+        setResult(ConstantManager.AUTH_ACTIVITY_COMPLETE_CODE);
+        finish();
     }
 
     private void signIn(){
         if(NetworkStatusChecker.isNetworkAvailable(this)) {
+            showProgress();
             Call<UserModelRes> call = mDataManager.loginUser(new UserLoginReq(mLogin.getText().toString(), mPassword.getText().toString()));
             call.enqueue(new Callback<UserModelRes>() {
                 @Override
                 public void onResponse(Call<UserModelRes> call, Response<UserModelRes> response) {
                     if (response.code() == 200) {
                         loginSuccess(response.body());
+                        hideProgress();
                     } else if (response.code() == 404) {
+                        hideProgress();
                         showSnackbar("Неверный логин или пароль");
                     } else {
+                        hideProgress();
                         showSnackbar("Всё пропало Шеф!!!");
                     }
                 }
 
                 @Override
                 public void onFailure(Call<UserModelRes> call, Throwable t) {
+                    hideProgress();
                     // TODO: 13.07.16 обработать ошибку
                 }
             });
@@ -136,7 +161,6 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
 
 
         mDataManager.getPreferencesManager().saveUserFullName(userModel.getData().getUser().getFirstName(),userModel.getData().getUser().getSecondName());
-
-
     }
+
 }

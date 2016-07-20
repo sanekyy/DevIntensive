@@ -37,7 +37,7 @@
                 android:layout_height="?attr/actionBarSize"
                 app:theme="@style/ToolBarStyle"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                android:titleTextColor="@color/white"
+                app:titleTextColor="@color/white"
                 app:layout_collapseMode="pin"
                 />
 

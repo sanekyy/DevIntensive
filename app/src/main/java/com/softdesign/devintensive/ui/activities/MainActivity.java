@@ -37,7 +37,9 @@ import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
+import com.softdesign.devintensive.utils.CircleTransform;
 import com.softdesign.devintensive.utils.ConstantManager;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -135,15 +137,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initUserFields();
         initUserInfoValue();
         initDrawerHeaderInfo();
-
-        Picasso.with(this)
-                .load(mDataManager.getPreferencesManager().loadUserPhoto())
-                .placeholder(R.drawable.user_photo) // TODO: 02.07.16  следать плейсхолдер и трансформ + crop
-                .into(mProfileImage);
-        Picasso.with(this)
-                .load(mDataManager.getPreferencesManager().loadUserAvatar())
-                .placeholder(R.drawable.user_photo)
-                .into((ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.avatar_iv));
+        loadPhotos();
 
         if (savedInstanceState == null) {
             // start first
@@ -208,6 +202,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (mNavigationView.isShown()) {
             mNavigationDrawer.closeDrawer(GravityCompat.START);
         } else {
+            setResult(ConstantManager.EXIT_APP_CODE);
+            finish();
             super.onBackPressed();
         }
     }
@@ -278,11 +274,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void setupDrawer() {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                showSnackbar(item.getTitle().toString());
+
+                switch (item.getItemId()){
+                    case R.id.user_profile_menu:
+                        break;
+                    case R.id.team_menu:
+                        setResult(ConstantManager.USER_LIST_ACTIVITY_CODE);
+                        finish();
+                        break;
+                    case R.id.logout_menu:
+                        setResult(ConstantManager.LOGOUT_CODE);
+                        finish();
+                        break;
+                    default: showSnackbar(item.getTitle().toString());
+                }
                 item.setChecked(true);
                 mNavigationDrawer.closeDrawer(GravityCompat.START);
                 return false;
@@ -293,6 +301,94 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void initDrawerHeaderInfo() {
         ((TextView) mNavigationView.getHeaderView(0).findViewById(R.id.user_name_txt)).setText(DataManager.getInstance().getPreferencesManager().getUserFullName());
         ((TextView) mNavigationView.getHeaderView(0).findViewById(R.id.user_email_txt)).setText(DataManager.getInstance().getPreferencesManager().getUserEmail());
+    }
+
+    private void loadPhotos() {
+        final String userPhoto;
+        final String userAvatar;
+
+        if(mDataManager.getPreferencesManager().loadUserPhoto().toString().isEmpty()){
+            userPhoto="null";
+            Log.e(TAG, "loadPhotos: user with name " + mDataManager.getPreferencesManager().getUserFullName() + " has empty photo");
+        } else{
+            userPhoto = mDataManager.getPreferencesManager().loadUserPhoto().toString();
+        }
+
+        if(mDataManager.getPreferencesManager().loadUserAvatar().toString().isEmpty()){
+            userAvatar="null";
+            Log.e(TAG, "loadPhotos: user with name " + mDataManager.getPreferencesManager().getUserFullName() + " has empty avatar");
+        } else {
+            userAvatar = mDataManager.getPreferencesManager().loadUserAvatar().toString();
+        }
+
+
+        mDataManager.getPicasso()
+                .load(userPhoto)
+                .fit()
+                .centerCrop()
+                .placeholder(R.drawable.user_bg)
+                .error(R.drawable.user_bg)
+                .into(mProfileImage,  new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, " load from cache");
+                    }
+
+                    @Override
+                    public void onError() {
+                        DataManager.getInstance().getPicasso()
+                                .load(userPhoto)
+                                .error(R.drawable.user_bg)
+                                .placeholder(R.drawable.user_bg)
+                                .fit()
+                                .centerCrop()
+                                .into(mProfileImage, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+
+                                    }
+
+                                    @Override
+                                    public void onError() {
+                                        Log.d(TAG, "Could not fetch image");
+                                    }
+                                });
+                    }
+                });
+        mDataManager.getPicasso()
+                .load(userAvatar)
+                .fit()
+                .centerCrop()
+                .transform(new CircleTransform())
+                .placeholder(R.drawable.user_bg)
+                .error(R.drawable.user_bg)
+                .into((ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.avatar_iv), new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, " load from cache");
+                    }
+
+                    @Override
+                    public void onError() {
+                        DataManager.getInstance().getPicasso()
+                                .load(userAvatar)
+                                .error(R.drawable.user_bg)
+                                .placeholder(R.drawable.user_bg)
+                                .fit()
+                                .centerCrop()
+                                .into((ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.avatar_iv), new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+
+                                    }
+
+                                    @Override
+                                    public void onError() {
+                                        Log.d(TAG, "Could not fetch image");
+                                    }
+                                });
+                    }
+                });
     }
 
     /**

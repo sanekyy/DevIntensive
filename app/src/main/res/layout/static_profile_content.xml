@@ -137,7 +137,7 @@
             <ListView
                 android:id="@+id/repositories_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="72dp"
                 android:layout_marginLeft="@dimen/spacing_medium_32"/>
 
             <ImageView

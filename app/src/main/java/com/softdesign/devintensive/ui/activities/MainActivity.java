@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,7 +38,12 @@ import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
+import com.softdesign.devintensive.data.network.res.UploadPhotoRes;
+import com.softdesign.devintensive.utils.CircleTransform;
 import com.softdesign.devintensive.utils.ConstantManager;
+import com.softdesign.devintensive.utils.NetworkStatusChecker;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -47,6 +53,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.BindViews;
+import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Response;
+
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = ConstantManager.TAG_PREFIX + "Main Activity";
@@ -54,23 +69,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     DataManager mDataManager;
     private int mCurrentEditMode = 0;
 
-    private CoordinatorLayout mCoordinatorLayout;
-    private Toolbar mToolbar;
-    private DrawerLayout mNavigationDrawer;
-    private NavigationView mNavigationView;
-    private FloatingActionButton mFab;
-    private RelativeLayout mProfilePlaceholder;
-    private CollapsingToolbarLayout mCollapsingToolbar;
-    private AppBarLayout mAppBarLayout;
-    private ImageView mProfileImage;
+    @BindView(R.id.main_coordinator_container)
+    CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.navigation_drawer)
+    DrawerLayout mNavigationDrawer;
+    @BindView(R.id.navigation_view)
+    NavigationView mNavigationView;
+    @BindView(R.id.fab)
+    FloatingActionButton mFab;
+    @BindView(R.id.profile_placeholder)
+    RelativeLayout mProfilePlaceholder;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout mCollapsingToolbar;
+    @BindView(R.id.appbar_layout)
+    AppBarLayout mAppBarLayout;
+    @BindView(R.id.user_photo_img)
+    ImageView mProfileImage;
 
     // User Fields
-    private EditText mUserPhone_et, mUserEmail_et, mUserVk_et, mUserGithub_et, mUserBio_et;
-    private List<EditText> mUserInfoViews;
+    //private EditText mUserPhone_et, mUserEmail_et, mUserVk_et, mUserGithub_et, mUserBio_et;
+    @BindViews({R.id.phone_et, R.id.email_et, R.id.vk_et, R.id.github_et, R.id.bio_et})
+    List<EditText> mUserInfoViews;
 
     // Grey Box
-    private TextView mUserValueRating, mUserValueCodeLines, mUserValueProjects;
-    private List<TextView> mUserValueViews;
+    //private TextView mUserValueRating, mUserValueCodeLines, mUserValueProjects;
+    @BindViews({R.id.rating_tv, R.id.code_lines_tv, R.id.projects_tv})
+    List<TextView> mUserValueViews;
+
+    // Image for Action
+    @BindViews({R.id.call_iv, R.id.sendMessage_iv, R.id.openLinkVK_iv, R.id.openLinkGIT_iv})
+    List<ImageView> mUserInfoImageForAction;
+
+
 
     private AppBarLayout.LayoutParams mAppBarParams = null;
     private File mPhotoFile = null;
@@ -86,64 +118,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Log.d(ConstantManager.TAG_PREFIX, DataManager.getInstance().getPreferencesManager().getAuthToken());
         Log.d(ConstantManager.TAG_PREFIX, DataManager.getInstance().getPreferencesManager().getUserId());
 
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_container);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mNavigationDrawer = (DrawerLayout) findViewById(R.id.navigation_drawer);
-        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
-        mProfilePlaceholder = (RelativeLayout) findViewById(R.id.profile_placeholder);
-        mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
-        mProfileImage = (ImageView) findViewById(R.id.user_photo_img);
+        ButterKnife.bind(this);
 
         mDataManager = DataManager.getInstance();
 
-        mUserPhone_et = (EditText) findViewById(R.id.phone_et);
-        mUserEmail_et = (EditText) findViewById(R.id.email_et);
-        mUserVk_et = (EditText) findViewById(R.id.vk_et);
-        mUserGithub_et = (EditText) findViewById(R.id.github_et);
-        mUserBio_et = (EditText) findViewById(R.id.bio_et);
-
-        mUserInfoViews = new ArrayList<>();
-        mUserInfoViews.add(mUserPhone_et);
-        mUserInfoViews.add(mUserEmail_et);
-        mUserInfoViews.add(mUserVk_et);
-        mUserInfoViews.add(mUserGithub_et);
-        mUserInfoViews.add(mUserBio_et);
-
-        mUserValueRating = (TextView) findViewById(R.id.rating_tv);
-        mUserValueCodeLines = (TextView) findViewById(R.id.code_lines_tv);
-        mUserValueProjects = (TextView) findViewById(R.id.projects_tv);
-
-        mUserValueViews = new ArrayList<>();
-        mUserValueViews.add(mUserValueRating);
-        mUserValueViews.add(mUserValueCodeLines);
-        mUserValueViews.add(mUserValueProjects);
-
-
-        ((ImageView) findViewById(R.id.call_iv)).setOnClickListener(this);
-        ((ImageView) findViewById(R.id.sendMessage_iv)).setOnClickListener(this);
-        ((ImageView) findViewById(R.id.openLinkVK_iv)).setOnClickListener(this);
-        ((ImageView) findViewById(R.id.openLinkGIT_iv)).setOnClickListener(this);
-
+        for (ImageView imageView : mUserInfoImageForAction){
+            imageView.setOnClickListener(this);
+        }
         mFab.setOnClickListener(this);
         mProfilePlaceholder.setOnClickListener(this);
-
 
         setupToolbar();
         setupDrawer();
         initUserFields();
         initUserInfoValue();
         initDrawerHeaderInfo();
-
-        Picasso.with(this)
-                .load(mDataManager.getPreferencesManager().loadUserPhoto())
-                .placeholder(R.drawable.user_photo) // TODO: 02.07.16  следать плейсхолдер и трансформ + crop
-                .into(mProfileImage);
-        Picasso.with(this)
-                .load(mDataManager.getPreferencesManager().loadUserAvatar())
-                .placeholder(R.drawable.user_photo)
-                .into((ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.avatar_iv));
+        loadPhotos();
 
         if (savedInstanceState == null) {
             // start first
@@ -208,7 +198,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (mNavigationView.isShown()) {
             mNavigationDrawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            setResult(ConstantManager.EXIT_APP_CODE);
+            finish();
         }
     }
 
@@ -222,19 +213,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Intent intent;
         switch (v.getId()) {
             case R.id.call_iv:
-                intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mUserPhone_et.getText().toString()));
+                intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mDataManager.getPreferencesManager().loadUserProfileData().get(0)));
                 startActivity(intent);
                 break;
             case R.id.sendMessage_iv:
-                intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", mUserEmail_et.getText().toString(), null));
+                intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", mDataManager.getPreferencesManager().loadUserProfileData().get(1), null));
                 startActivity(intent);
                 break;
             case R.id.openLinkVK_iv:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + mUserVk_et.getText().toString()));
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + mDataManager.getPreferencesManager().loadUserProfileData().get(2)));
                 startActivity(intent);
                 break;
             case R.id.openLinkGIT_iv:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + mUserGithub_et.getText().toString()));
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://" + mDataManager.getPreferencesManager().loadUserProfileData().get(3)));
                 startActivity(intent);
                 break;
             case R.id.fab:
@@ -278,11 +269,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void setupDrawer() {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                showSnackbar(item.getTitle().toString());
+
+                switch (item.getItemId()){
+                    case R.id.user_profile_menu:
+                        break;
+                    case R.id.team_menu:
+                        setResult(ConstantManager.USER_LIST_ACTIVITY_CODE);
+                        finish();
+                        break;
+                    case R.id.logout_menu:
+                        setResult(ConstantManager.LOGOUT_CODE);
+                        finish();
+                        break;
+                    default: showSnackbar(item.getTitle().toString());
+                }
                 item.setChecked(true);
                 mNavigationDrawer.closeDrawer(GravityCompat.START);
                 return false;
@@ -293,6 +296,53 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void initDrawerHeaderInfo() {
         ((TextView) mNavigationView.getHeaderView(0).findViewById(R.id.user_name_txt)).setText(DataManager.getInstance().getPreferencesManager().getUserFullName());
         ((TextView) mNavigationView.getHeaderView(0).findViewById(R.id.user_email_txt)).setText(DataManager.getInstance().getPreferencesManager().getUserEmail());
+    }
+
+    private void loadPhotos() {
+        final String userPhoto;
+        final String userAvatar;
+
+        if(mDataManager.getPreferencesManager().loadUserPhoto().toString().isEmpty()){
+            userPhoto="null";
+            Log.e(TAG, "loadPhotos: user with name " + mDataManager.getPreferencesManager().getUserFullName() + " has empty photo");
+        } else{
+            userPhoto = mDataManager.getPreferencesManager().loadUserPhoto().toString();
+        }
+
+        if(mDataManager.getPreferencesManager().loadUserAvatar().toString().isEmpty()){
+            userAvatar="null";
+            Log.e(TAG, "loadPhotos: user with name " + mDataManager.getPreferencesManager().getUserFullName() + " has empty avatar");
+        } else {
+            userAvatar = mDataManager.getPreferencesManager().loadUserAvatar().toString();
+        }
+
+
+        mDataManager.getPicasso()
+                .load(userPhoto)
+                .error(R.drawable.user_bg)
+                .fit()
+                .centerCrop()
+                .placeholder(R.drawable.user_bg)
+                .into(mProfileImage, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        hideProgress();
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+                });
+
+        mDataManager.getPicasso()
+                .load(userAvatar)
+                .error(R.drawable.user_bg)
+                .transform(new CircleTransform())
+                .fit()
+                .centerCrop()
+                .placeholder(R.drawable.user_bg)
+                .into((ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.avatar_iv));
     }
 
     /**
@@ -309,16 +359,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 if (resultCode == RESULT_OK && data != null) {
                     mSelectedImage = data.getData();
 
-                    insertProfileImage(mSelectedImage);
+                    uploadPhoto(getFileFromUri(mSelectedImage));
+                    uploadAvatar(getFileFromUri(mSelectedImage));
                 }
                 break;
             case ConstantManager.REQUEST_CAMERA_PICTURE:
                 if (resultCode == RESULT_OK && mPhotoFile != null) {
                     mSelectedImage = Uri.fromFile(mPhotoFile);
-                    insertProfileImage(mSelectedImage);
+                    uploadPhoto(mPhotoFile);
+                    uploadAvatar(mPhotoFile);
                 }
                 break;
         }
+    }
+
+    private File getFileFromUri(Uri uri){
+        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+        Cursor cursor = this.getContentResolver().query(uri, filePathColumn, null, null, null);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String filePath = cursor.getString(columnIndex);
+        cursor.close();
+        return new File(filePath);
     }
 
     /**
@@ -336,9 +398,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 userValue.setFocusableInTouchMode(true);
             }
 
-            mUserPhone_et.requestFocus();
+            mUserInfoViews.get(0).requestFocus();
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(mUserPhone_et, InputMethodManager.SHOW_IMPLICIT);
+            imm.showSoftInput(mUserInfoViews.get(0), InputMethodManager.SHOW_IMPLICIT);
             showProfilePlaceholder();
             lockToolbar();
             mCollapsingToolbar.setExpandedTitleColor(Color.TRANSPARENT);
@@ -402,14 +464,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             ActivityCompat.requestPermissions(this, new String[]{
                     android.Manifest.permission.READ_EXTERNAL_STORAGE,
             }, ConstantManager.GALLERY_REQUEST_PERMISSION_CODE);
-
-            Snackbar.make(mCoordinatorLayout, "Для корректной работы необходимо дать требуемуе разрешения", Snackbar.LENGTH_LONG)
-                    .setAction("Разрешить", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            openApplicationSettings();
-                        }
-                    }).show();
         }
 
 
@@ -441,14 +495,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     android.Manifest.permission.CAMERA
             }, ConstantManager.CAMERA_REQUEST_PERMISSION_CODE);
-
-            Snackbar.make(mCoordinatorLayout, "Для корректной работы необходимо дать требуемуе разрешения", Snackbar.LENGTH_LONG)
-                    .setAction("Разрешить", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            openApplicationSettings();
-                        }
-                    }).show();
         }
     }
 
@@ -465,12 +511,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 // TODO: 02.07.16 тут обрабатываем разрешение ( разрешение получено ) например вывести сообщение или обработать какой-то логикой если нужно
                 // запускаем камеру
+            } else {
+                Snackbar.make(mCoordinatorLayout, "Для корректной работы необходимо дать требуемуе разрешения", Snackbar.LENGTH_LONG)
+                        .setAction("Разрешить", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                openApplicationSettings();
+                            }
+                        }).show();
             }
         }
         if (requestCode == ConstantManager.GALLERY_REQUEST_PERMISSION_CODE && grantResults.length == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // TODO: 02.07.16 тут обрабатываем разрешение ( разрешение получено ) например вывести сообщение или обработать какой-то логикой если нужно
                 // открываем галерею
+            } else {
+                Snackbar.make(mCoordinatorLayout, "Для корректной работы необходимо дать требуемуе разрешения", Snackbar.LENGTH_LONG)
+                        .setAction("Разрешить", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                openApplicationSettings();
+                            }
+                        }).show();
             }
         }
 
@@ -501,7 +563,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mAppBarParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
         mCollapsingToolbar.setLayoutParams(mAppBarParams);
     }
-
 
     /**
      * Создаём диалог в зависимости от id и выводим его пользователю
@@ -569,17 +630,82 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         return image;
     }
 
-    /**
-     * Вставляем новое фото пользователя в ImageView, а так же сохраняем его как новую аватарку
-     *
-     * @param selectedImage
-     */
-    private void insertProfileImage(Uri selectedImage) {
-        Picasso.with(this)
-                .load(selectedImage)
-                .into(mProfileImage); // TODO: 02.07.16  следать плейсхолдер и трансформ + crop
+    private void uploadPhoto(File file){
+        if (!NetworkStatusChecker.isNetworkAvailable(mDataManager.getContext())) {
+            showSnackbar(getString(R.string.error_network_not_available));
+            return;
+        }
 
-        mDataManager.getPreferencesManager().saveUserPhoto(selectedImage);
+        showProgress();
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
+        Call<UploadPhotoRes> call = mDataManager.uploadPhoto(
+                mDataManager.getPreferencesManager().getUserId(), body);
+        call.enqueue(new retrofit2.Callback<UploadPhotoRes>() {
+            @Override
+            public void onResponse(Call<UploadPhotoRes> call, Response<UploadPhotoRes> response) {
+
+                if (response.code() == 404) {
+                    hideProgress();
+                    setResult(ConstantManager.LOGOUT_CODE);
+                    finish();
+                } else if (response.code() == 200&&response.body().isSuccess()){
+                    mDataManager.getPreferencesManager().saveUserPhoto(Uri.parse(response.body().getData().getPhoto()));
+                    mDataManager.getPicasso().invalidate(mDataManager.getPreferencesManager().loadUserPhoto());
+                    loadPhotos();
+                    showSnackbar(getString(R.string.photo_uploaded_successfully));
+                } else {
+                    hideProgress();
+                    showSnackbar(getString(R.string.error_all_bad));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UploadPhotoRes> call, Throwable t) {
+                hideProgress();
+                    showSnackbar(getString(R.string.error_all_bad));
+            }
+        });
+    }
+
+    private void uploadAvatar(File file){
+        if (!NetworkStatusChecker.isNetworkAvailable(MainActivity.this)) {
+            showSnackbar(getString(R.string.error_network_not_available));
+            return;
+        }
+
+        showProgress();
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("avatar", file.getName(), requestFile);
+        Call<UploadPhotoRes> call = mDataManager.uploadAvatar(
+                mDataManager.getPreferencesManager().getUserId(), body);
+        call.enqueue(new retrofit2.Callback<UploadPhotoRes>() {
+            @Override
+            public void onResponse(Call<UploadPhotoRes> call, Response<UploadPhotoRes> response) {
+
+                if (response.code() == 404) {
+                    hideProgress();
+                    setResult(ConstantManager.LOGOUT_CODE);
+                    finish();
+                } else if (response.code() == 200&&response.body().isSuccess()) {
+                    mDataManager.getPreferencesManager().saveUserAvatar(Uri.parse(response.body().getData().getPhoto()));
+                    mDataManager.getPicasso().invalidate(mDataManager.getPreferencesManager().loadUserAvatar());
+                    loadPhotos();
+                    showSnackbar(getString(R.string.photo_uploaded_successfully));
+                } else{
+                    hideProgress();
+                    showSnackbar(getString(R.string.error_all_bad));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UploadPhotoRes> call, Throwable t) {
+                hideProgress();
+                showSnackbar(getString(R.string.error_all_bad));
+            }
+        });
     }
 
     public void openApplicationSettings() {

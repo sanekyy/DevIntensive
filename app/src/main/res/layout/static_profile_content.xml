@@ -1,9 +1,10 @@
 <android.support.v4.widget.NestedScrollView
+    android:id="@+id/nested_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    app:layout_behavior=".ui.behaviors.CustomNestedScrollBehavior"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
@@ -12,115 +13,6 @@
         android:orientation="vertical"
 
         tools:context=".ui.activities.MainActivity">
-
-
-        <!-- Grey horizontal rect -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/grey"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/spacing_medial_24"
-            android:paddingTop="@dimen/spacing_medial_24">
-
-            <!-- User's rate -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_small_8"
-                android:layout_marginLeft="@dimen/spacing_normal_16"
-                android:layout_marginRight="@dimen/spacing_normal_16"
-                android:layout_marginTop="@dimen/spacing_small_8"
-                android:orientation="vertical"
-                >
-
-                <TextView
-                    android:id="@+id/rating_tv"
-                    style="@style/textFontFamily"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="5"
-                    android:textColor="@color/white"
-                    android:textSize="30sp"/>
-
-                <TextView
-                    style="@style/textFontFamily"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Рейтинг"
-                    android:textColor="@color/white"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="@dimen/line_size"
-                android:layout_height="match_parent"
-                android:background="@color/grey_light"/>
-
-            <!-- User's code lines -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_small_8"
-                android:layout_marginTop="@dimen/spacing_small_8"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/code_lines_tv"
-                    style="@style/textFontFamily"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="25000"
-                    android:textColor="@color/white"
-                    android:textSize="30sp"/>
-
-                <TextView
-                    style="@style/textFontFamily"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Написано строк кода"
-                    android:textColor="@color/white"/>
-            </LinearLayout>
-
-            <View
-                android:layout_width="@dimen/line_size"
-                android:layout_height="match_parent"
-                android:background="@color/grey_light"/>
-
-            <!-- User's project -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_small_8"
-                android:layout_marginLeft="@dimen/spacing_normal_16"
-                android:layout_marginRight="@dimen/spacing_normal_16"
-                android:layout_marginTop="@dimen/spacing_small_8"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/projects_tv"
-                    style="@style/textFontFamily"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="5"
-                    android:textColor="@color/white"
-                    android:textSize="30sp"/>
-
-                <TextView
-                    style="@style/textFontFamily"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="Проектов"
-                    android:textColor="@color/white"/>
-            </LinearLayout>
-
-        </LinearLayout>
 
 
         <!-- Github line -->
@@ -137,7 +29,7 @@
             <ListView
                 android:id="@+id/repositories_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="72dp"
                 android:layout_marginLeft="@dimen/spacing_medium_32"/>
 
             <ImageView

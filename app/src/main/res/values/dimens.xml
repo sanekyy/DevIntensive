@@ -39,6 +39,7 @@
 
 
     <dimen name="auth_card_view_width_240dp">240dp</dimen>
+    <dimen name="user_info_size">112dp</dimen>
 
 
 </resources>

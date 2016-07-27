@@ -9,6 +9,10 @@
         <item
             android:id="@+id/team_menu"
             android:icon="@drawable/ic_people_black_24dp"
-            android:title="Команда"/>
+            android:title="Участники интенсива"/>
+        <item
+            android:id="@+id/logout_menu"
+            android:icon="@drawable/logout"
+            android:title="Выход"/>
     </group>
 </menu>

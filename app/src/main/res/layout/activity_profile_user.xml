@@ -37,13 +37,123 @@
                 android:layout_height="?attr/actionBarSize"
                 app:theme="@style/ToolBarStyle"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                android:titleTextColor="@color/white"
+                app:titleTextColor="@color/white"
                 app:layout_collapseMode="pin"
                 />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
+
+    <!-- Grey horizontal rect -->
+    <LinearLayout
+        android:id="@+id/user_info_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/user_info_size"
+        android:background="@color/color_primary"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_behavior=".ui.behaviors.UserInfoBehavior"
+        app:behavior_min_height="@dimen/size_large_72">
+
+        <!-- User's rate -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_small_8"
+            android:layout_marginLeft="@dimen/spacing_normal_16"
+            android:layout_marginRight="@dimen/spacing_normal_16"
+            android:layout_marginTop="@dimen/spacing_small_8"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:id="@+id/rating_tv"
+                style="@style/textFontFamily"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="5"
+                android:textColor="@color/white"
+                android:textSize="30sp"/>
+
+            <TextView
+                style="@style/textFontFamily"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Рейтинг"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/line_size"
+            android:layout_height="match_parent"
+            android:background="@color/grey_light"/>
+
+        <!-- User's code lines -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_small_8"
+            android:layout_marginTop="@dimen/spacing_small_8"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/code_lines_tv"
+                style="@style/textFontFamily"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="25000"
+                android:textColor="@color/white"
+                android:textSize="30sp"/>
+
+            <TextView
+                style="@style/textFontFamily"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Написано строк кода"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/line_size"
+            android:layout_height="match_parent"
+            android:background="@color/grey_light"/>
+
+        <!-- User's project -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_small_8"
+            android:layout_marginLeft="@dimen/spacing_normal_16"
+            android:layout_marginRight="@dimen/spacing_normal_16"
+            android:layout_marginTop="@dimen/spacing_small_8"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/projects_tv"
+                style="@style/textFontFamily"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="5"
+                android:textColor="@color/white"
+                android:textSize="30sp"/>
+
+            <TextView
+                style="@style/textFontFamily"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Проектов"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
 
     <include layout="@layout/static_profile_content"/>

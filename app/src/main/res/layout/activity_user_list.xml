@@ -8,8 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.activities.MainActivity"
-    android:fitsSystemWindows="true"
-    >
+    android:fitsSystemWindows="true">
 
 
 
@@ -23,7 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/color_primary"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/AppTheme.AppBarOverlay"
+            >
 
 
                 <android.support.v7.widget.Toolbar
@@ -31,8 +31,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:theme="@style/AppTheme.PopupOverlay"
-                    android:titleTextColor="@color/white"
                     app:layout_collapseMode="pin"
+                    app:titleTextColor="@color/white"
                     app:theme="@style/ToolBarStyle"
                     app:popupTheme="@style/AppTheme.PopupOverlay"/>
 

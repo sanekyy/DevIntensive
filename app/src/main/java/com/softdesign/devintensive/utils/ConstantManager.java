@@ -31,5 +31,18 @@ public interface ConstantManager {
     int CAMERA_REQUEST_PERMISSION_CODE=102;
     int GALLERY_REQUEST_PERMISSION_CODE=103;
 
+    int AUTH_ACTIVITY_CODE = 1001;
+    int MAIN_ACTIVITY_CODE = 1002;
+    int USER_LIST_ACTIVITY_CODE = 1003;
+
+    int EXIT_APP_CODE = -1;
+    int LOGOUT_CODE = 0;
+
+    int AUTH_ACTIVITY_COMPLETE_CODE = 1;
+
     String PARCELABLE_KEY = "PARCELABLE_KEY";
+
+
+
+    ;
 }

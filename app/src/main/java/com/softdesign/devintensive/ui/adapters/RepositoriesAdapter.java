@@ -51,7 +51,6 @@ public class RepositoriesAdapter extends BaseAdapter {
         TextView repoName = (TextView) itemView.findViewById(R.id.github_et);
         repoName.setText(mRepoList.get(position));
 
-
         return itemView;
     }
 }

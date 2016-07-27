@@ -6,10 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by ihb on 13.07.16.
- */
-public class UserModelRes {
+public class UserInfoRes {
+
     @SerializedName("success")
     @Expose
     private boolean success;
@@ -21,15 +19,13 @@ public class UserModelRes {
         return data;
     }
 
-    public class User {
-
+    public class Data {
         @SerializedName("_id")
         @Expose
         private String id;
         @SerializedName("first_name")
         @Expose
         private String firstName;
-
         @SerializedName("second_name")
         @Expose
         private String secondName;
@@ -42,7 +38,6 @@ public class UserModelRes {
         @SerializedName("contacts")
         @Expose
         private Contacts contacts;
-
         @SerializedName("profileValues")
         @Expose
         private ProfileValues profileValues;
@@ -63,16 +58,8 @@ public class UserModelRes {
             return id;
         }
 
-        public ProfileValues getProfileValues() {
-            return profileValues;
-        }
-
-        public String getFirstName() {
-            return firstName;
-        }
-
-        public String getSecondName() {
-            return secondName;
+        public String getFullName() {
+            return secondName + " " + firstName;
         }
 
         public Repositories getRepositories() {
@@ -83,17 +70,18 @@ public class UserModelRes {
             return contacts;
         }
 
+        public ProfileValues getProfileValues() {
+            return profileValues;
+        }
+
         public PublicInfo getPublicInfo() {
             return publicInfo;
         }
     }
 
-
     public class Repositories {
-
         @SerializedName("repo")
         @Expose
-
         private List<Repo> repo = new ArrayList<Repo>();
         @SerializedName("updated")
         @Expose
@@ -105,7 +93,6 @@ public class UserModelRes {
     }
 
     public class Repo {
-
         @SerializedName("_id")
         @Expose
         private String id;
@@ -116,17 +103,12 @@ public class UserModelRes {
         @Expose
         private String title;
 
-        public String getId() {
-            return id;
-        }
-
         public String getGit() {
             return git;
         }
     }
 
     public class PublicInfo {
-
         @SerializedName("bio")
         @Expose
         private String bio;
@@ -154,7 +136,6 @@ public class UserModelRes {
     }
 
     public class ProfileValues {
-
         @SerializedName("homeTask")
         @Expose
         private int homeTask;
@@ -184,26 +165,7 @@ public class UserModelRes {
         }
     }
 
-    public class Data {
-
-        @SerializedName("user")
-        @Expose
-        private User user;
-        @SerializedName("token")
-        @Expose
-        private String token;
-
-        public String getToken() {
-            return token;
-        }
-
-        public User getUser() {
-            return user;
-        }
-    }
-
     public class Contacts {
-
         @SerializedName("vk")
         @Expose
         private String vk;

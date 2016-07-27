@@ -15,11 +15,14 @@ import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.data.network.req.UserLoginReq;
 import com.softdesign.devintensive.data.network.res.UserModelRes;
+import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.NetworkStatusChecker;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,10 +32,16 @@ import retrofit2.Response;
  */
 public class AuthActivity extends BaseActivity implements View.OnClickListener {
 
-    private Button mSignIn;
-    private TextView mRememberPassword;
-    private EditText mLogin, mPassword;
-    private CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.sign_in_btn)
+    Button mSignIn;
+    @BindView(R.id.remember_password_tv)
+    TextView mRememberPassword;
+    @BindView(R.id.login_email_et)
+    EditText mLogin;
+    @BindView(R.id.login_password_et)
+    EditText mPassword;
+    @BindView(R.id.main_coordinator_container)
+    CoordinatorLayout mCoordinatorLayout;
 
     private DataManager mDataManager;
 
@@ -44,11 +53,7 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
 
         mDataManager = DataManager.getInstance();
 
-        mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_container);
-        mSignIn = (Button) findViewById(R.id.login_btn);
-        mRememberPassword = (TextView) findViewById(R.id.remember_password_tv);
-        mLogin = (EditText) findViewById(R.id.login_email_et);
-        mPassword = (EditText) findViewById(R.id.login_password_et);
+        ButterKnife.bind(this);
 
         mRememberPassword.setOnClickListener(this);
         mSignIn.setOnClickListener(this);
@@ -57,7 +62,7 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.login_btn:
+            case R.id.sign_in_btn:
                 signIn();
                 break;
             case R.id.remember_password_tv:
@@ -66,6 +71,12 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        setResult(ConstantManager.EXIT_APP_CODE);
+        finish();
+        super.onBackPressed();
+    }
     private void showSnackbar(String message){
         Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
     }
@@ -77,7 +88,6 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
 
     private void loginSuccess(UserModelRes userModel){
 
-        showSnackbar(userModel.getData().getToken());
         mDataManager.getPreferencesManager().saveAuthToken(userModel.getData().getToken());
         mDataManager.getPreferencesManager().saveUserId(userModel.getData().getUser().getId());
         mDataManager.getPreferencesManager().saveUserPhoto(Uri.parse(userModel.getData().getUser().getPublicInfo().getPhoto()));
@@ -85,32 +95,37 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
         saveUserValues(userModel);
         saveUserFields(userModel);
 
-        Intent loginIntent = new Intent(this, MainActivity.class);
-        startActivity(loginIntent);
+        setResult(ConstantManager.AUTH_ACTIVITY_COMPLETE_CODE);
+        finish();
     }
 
     private void signIn(){
         if(NetworkStatusChecker.isNetworkAvailable(this)) {
+            showProgress();
             Call<UserModelRes> call = mDataManager.loginUser(new UserLoginReq(mLogin.getText().toString(), mPassword.getText().toString()));
             call.enqueue(new Callback<UserModelRes>() {
                 @Override
                 public void onResponse(Call<UserModelRes> call, Response<UserModelRes> response) {
                     if (response.code() == 200) {
                         loginSuccess(response.body());
+                        hideProgress();
                     } else if (response.code() == 404) {
-                        showSnackbar("Неверный логин или пароль");
+                        hideProgress();
+                        showSnackbar(getString(R.string.error_login_or_password));
                     } else {
-                        showSnackbar("Всё пропало Шеф!!!");
+                        hideProgress();
+                        showSnackbar(getString(R.string.error_all_bad));
                     }
                 }
 
                 @Override
                 public void onFailure(Call<UserModelRes> call, Throwable t) {
+                    hideProgress();
                     // TODO: 13.07.16 обработать ошибку
                 }
             });
         } else{
-            showSnackbar("Сеть недоступна, проверьте соединение");
+            showSnackbar(getString(R.string.error_network_not_available));
         }
     }
 
@@ -136,7 +151,6 @@ public class AuthActivity extends BaseActivity implements View.OnClickListener {
 
 
         mDataManager.getPreferencesManager().saveUserFullName(userModel.getData().getUser().getFirstName(),userModel.getData().getUser().getSecondName());
-
-
     }
+
 }
